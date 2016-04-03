@@ -3,7 +3,7 @@ A Node.js program that allows you to perform actions using a ROBLOX account usin
 
 ## Documentation
 
-### All of the following API endpoints are in JSON and require the specified parameters as well as an `authKey` parameter for authentication.
+#### All of the following API endpoints are in JSON and require the specified parameters as well as an `authKey` parameter for authentication.
 
 ### Set user ranks in a group
 #### POST /api/rbx/groups/setRank
