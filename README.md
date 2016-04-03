@@ -38,7 +38,7 @@ Parameters:
 - userId
   - [integer] The userId for the user who should be exiled
 - deletePosts
-  - [boolean] [optional] Whether or not all of the wall posts made by the specified user should be deleted
+  - [boolean] [optional, default = `false`] Whether or not all of the wall posts made by the specified user should be deleted
 
 
 ### Update the group's shout
