@@ -81,12 +81,12 @@ groups.post("/setRank", function(req, res) {
 	
 	var groupId = body.groupId;
 	var userId = body.userId;
-	var rank = body.rank;
+	var roleset = body.roleset;
 	
 	var setRankOptions = {
 		group: groupId,
 		target: userId,
-		rank: rank,
+		roleset: roleset,
 		
 		success: function() {
 			sendRes(res, true);
