@@ -49,23 +49,19 @@ var groups = express.Router();
 
 // HANDLERS
 
-function sendRes(res, success, reason) {
-	var jsonRes = {success: success};
+function sendRes(res, status, err) {
+	var success = (status === 200);
+	var jsonRes = { success: success };
 	
-	if (reason)
-		jsonRes.reason = reason;
+	if (err) jsonRes.error = err.message;
 	
-	
-	res.json(jsonRes);
+	res.status(status).json(jsonRes);
 }
 
-function validateAuthorization(authKey, res) {
+function validateAuthentication(authKey, res) {
 	var authKeyCorrect = (authKey == REQUEST_AUTH_KEY);
 	
-	if (!authKeyCorrect)
-		sendRes(res, false, "Invalid authorization key.");
-	
-	
+	if (!authKeyCorrect) res.status(400).json({ success: false, error: "Invalid authorization key.");
 	return authKeyCorrect;
 }
 
@@ -74,10 +70,8 @@ groups.post("/setRank", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthorized = validateAuthorization(authKey, res);
-	
-	if (!isAuthorized)
-		return;
+	var isAuthentication = validateAuthentication(authKey, res);
+	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
 	var userId = body.userId;
@@ -97,18 +91,17 @@ groups.post("/setRank", function(req, res) {
 		}
 	};
 	
-	
-	rbx.setRank(setRankOptions);
+	rbx.setRank(setRankOptions)
+	.then(() => res.status(200).json({ success: true }))
+	.catch(err => res.status(500).json({ success: false, error: err.message }));
 });
 
 groups.post("/handleJoinRequest", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthorized = validateAuthorization(authKey, res);
-	
-	if (!isAuthorized)
-		return;
+	var isAuthentication = validateAuthentication(authKey, res);
+	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
 	var username = body.username;
@@ -117,29 +110,21 @@ groups.post("/handleJoinRequest", function(req, res) {
 	var handleJoinRequestOptions = {
 		group: groupId,
 		username: username,
-		accept: accept,
-		
-		success: function() {
-			sendRes(res, true);
-		},
-		
-		failure: function(err) {
-			sendRes(res, false, "An error occurred: " + err);
-		}
+		accept: accept
 	};
 	
 	
-	rbx.handleJoinRequest(handleJoinRequestOptions);
+	rbx.handleJoinRequest(handleJoinRequestOptions)
+	.then(() => res.status(200).json({ success: true }))
+	.catch(err => res.status(500).json({ success: false, error: err.message }));
 });
 
 groups.post("/exile", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthorized = validateAuthorization(authKey, res);
-	
-	if (!isAuthorized)
-		return;
+	var isAuthentication = validateAuthentication(authKey, res);
+	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
 	var userId = body.userId;
@@ -148,77 +133,55 @@ groups.post("/exile", function(req, res) {
 	var exileOptions = {
 		group: groupId,
 		target: userId,
-		deleteAllPosts: deletePosts,
-		
-		success: function() {
-			sendRes(res, true);
-		},
-		
-		failure: function(err) {
-			sendRes(res, false, "An error occurred: " + err);
-		}
+		deleteAllPosts: deletePosts
 	};
 	
 	
-	rbx.exile(exileOptions);
+	rbx.exile(exileOptions)
+	.then(() => res.status(200).json({ success: true }))
+	.catch(err => res.status(500).json({ success: false, error: err.message }));
 });
 
 groups.post("/shout", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthorized = validateAuthorization(authKey, res);
-	
-	if (!isAuthorized)
-		return;
+	var isAuthentication = validateAuthentication(authKey, res);
+	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
 	var message = body.message;
 	
 	var shoutOptions = {
 		group: groupId,
-		message: message,
-		
-		success: function() {
-			sendRes(res, true);
-		},
-		
-		failure: function(err) {
-			sendRes(res, false, "An error occurred: " + err);
-		}
+		message: message
 	};
 	
 	
-	rbx.shout(shoutOptions);
+	rbx.shout(shoutOptions)
+	.then(() => res.status(200).json({ success: true }))
+	.catch(err => res.status(500).json({ success: false, error: err.message }));
 });
 
 groups.post("/post", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthorized = validateAuthorization(authKey, res);
-	
-	if (!isAuthorized)
-		return;
+	var isAuthentication = validateAuthentication(authKey, res);
+	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
 	var message = body.message;
 	
 	var postOptions = {
 		group: groupId,
-		message: message,
-		
-		success: function() {
-			sendRes(res, true);
-		},
-		
-		failure: function(err) {
-			sendRes(res, false, "An error occurred: " + err);
-		}
+		message: message
 	};
 	
 	
-	rbx.post(postOptions);
+	rbx.post(postOptions)
+	.then(() => res.status(200).json({ success: true }))
+	.catch(err => res.status(500).json({ success: false, error: err.message }));
 });
 
 
