@@ -49,19 +49,10 @@ var groups = express.Router();
 
 // HANDLERS
 
-function sendRes(res, status, err) {
-	var success = (status === 200);
-	var jsonRes = { success: success };
-	
-	if (err) jsonRes.error = err.message;
-	
-	res.status(status).json(jsonRes);
-}
-
 function validateAuthentication(authKey, res) {
 	var authKeyCorrect = (authKey == REQUEST_AUTH_KEY);
 	
-	if (!authKeyCorrect) res.status(400).json({ success: false, error: "Invalid authorization key.");
+	if (!authKeyCorrect) res.status(400).json({ success: false, error: "Invalid authorization key."});
 	return authKeyCorrect;
 }
 
@@ -70,7 +61,7 @@ groups.post("/setRank", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthentication = validateAuthentication(authKey, res);
+	var isAuthenticated = validateAuthentication(authKey, res);
 	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
@@ -81,14 +72,6 @@ groups.post("/setRank", function(req, res) {
 		group: groupId,
 		target: userId,
 		roleset: roleset,
-		
-		success: function() {
-			sendRes(res, true);
-		},
-		
-		failure: function(err) {
-			sendRes(res, false, "An error occurred: " + err);
-		}
 	};
 	
 	rbx.setRank(setRankOptions)
@@ -100,7 +83,7 @@ groups.post("/handleJoinRequest", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthentication = validateAuthentication(authKey, res);
+	var isAuthenticated = validateAuthentication(authKey, res);
 	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
@@ -123,7 +106,7 @@ groups.post("/exile", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthentication = validateAuthentication(authKey, res);
+	var isAuthenticated = validateAuthentication(authKey, res);
 	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
@@ -146,7 +129,7 @@ groups.post("/shout", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthentication = validateAuthentication(authKey, res);
+	var isAuthenticated = validateAuthentication(authKey, res);
 	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
@@ -167,7 +150,7 @@ groups.post("/post", function(req, res) {
 	var body = req.body;
 	var authKey = body.authKey;
 	
-	var isAuthentication = validateAuthentication(authKey, res);
+	var isAuthenticated = validateAuthentication(authKey, res);
 	if (!isAuthenticated) return;
 	
 	var groupId = body.groupId;
